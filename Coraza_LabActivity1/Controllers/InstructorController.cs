@@ -14,7 +14,7 @@ namespace Coraza_LabActivity1.Controllers
                 LastName = "Lee",
                 Rank = Rank.Professor,
                 IsTenured = IsTenured.Permanent,
-                HiringDate = DateOnly.Parse ("04/09/2023")
+                HiringDate = DateTime.Parse ("04/09/2023 18:00:00")
             },
             new Instructor()
             {
@@ -23,7 +23,7 @@ namespace Coraza_LabActivity1.Controllers
                 LastName = "Coraza",
                 Rank = Rank.AssistantProfessor,
                 IsTenured = IsTenured.Permanent,
-                HiringDate = DateOnly.Parse ("29/09/2022")
+                HiringDate = DateTime.Parse ("29/09/2022 2:19:29")
             },
             new Instructor()
             {
@@ -32,7 +32,7 @@ namespace Coraza_LabActivity1.Controllers
                 LastName = "Dodgen",
                 Rank = Rank.Instructor,
                 IsTenured = IsTenured.Permanent,
-                HiringDate = DateOnly.Parse ("04/01/2023")
+                HiringDate = DateTime.Parse ("04/01/2023 10:50:34")
             },
             new Instructor()
             {
@@ -41,7 +41,7 @@ namespace Coraza_LabActivity1.Controllers
                 LastName = "Park",
                 Rank = Rank.AssociateProfessor,
                 IsTenured = IsTenured.Probationary,
-                HiringDate = DateOnly.Parse ("29/09/2020")
+                HiringDate = DateTime.Parse ("29/09/2020 17:30:00")
             },
             new Instructor()
             {
@@ -50,11 +50,14 @@ namespace Coraza_LabActivity1.Controllers
                 LastName = "Galitzine",
                 Rank = Rank.Professor,
                 IsTenured = IsTenured.Permanent,
-                HiringDate = DateOnly.Parse ("22/07/2023")
+                HiringDate = DateTime.Parse ("22/07/2023 18:28:23")
             }
 
 
         };
+
+        public object InstructorsList { get; private set; }
+
         public IActionResult Index()
         {
             return View(InstructorList);
@@ -69,5 +72,44 @@ namespace Coraza_LabActivity1.Controllers
 
             return View();
         }
+        [HttpGet]
+        public IActionResult AddInstructor()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddInstructor(Instructor newInstructor) 
+        {
+            InstructorList.Add(newInstructor);
+
+            return View("Index", InstructorList);
+        
+        }
+
+        public IActionResult Edit(int id)
+        {
+            Instructor? instructor = InstructorList.FirstOrDefault(inst => inst.Id == id);
+
+                return instructor != null ? View(instructor) : NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Instructor instructorChange)
+        {
+            Instructor? instructor = InstructorList.FirstOrDefault(inst => inst.Id == instructorChange.Id);
+                if (instructor != null)
+            {
+                instructor.Id = instructorChange.Id;
+                instructor.FirstName = instructorChange.FirstName;
+                instructor.LastName = instructorChange.LastName;
+                instructor.IsTenured = instructorChange.IsTenured;
+                instructor.Rank = instructorChange.Rank;
+                instructor.HiringDate = instructorChange.HiringDate;
+            }
+                return View("Index", InstructorList);
+        }
+
     }
+    
+
 }

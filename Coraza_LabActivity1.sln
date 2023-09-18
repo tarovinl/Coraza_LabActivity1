@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coraza_LabActivity1", "Coraza_LabActivity1\Coraza_LabActivity1.csproj", "{46D1E71F-69A1-43EE-A55D-68BB0BD8C1ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coraza_LabActivity1", "Coraza_LabActivity1\Coraza_LabActivity1.csproj", "{46D1E71F-69A1-43EE-A55D-68BB0BD8C1ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

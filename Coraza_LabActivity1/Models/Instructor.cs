@@ -16,6 +16,6 @@
         public string? LastName { get; set; }
         public IsTenured IsTenured { get; set; }
         public Rank Rank { get; set; }
-        public DateOnly HiringDate { get; set; }
+        public DateTime HiringDate { get; set; }
     }
 }
