@@ -1,0 +1,32 @@
+﻿@{
+    ﻿
+}﻿
+@model Student;
+
+<h1 class="fw-bold bg-gradient-danger text-danger">Are you sure you want to delete?</h1>
+
+<form asp-action="Delete" method="post">
+
+    <table class="table table-hover table-light opacity-75">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Course</td>
+                <td>Date Enrollment</td>
+
+            </tr>
+            <tr>
+                <td>@Model.Id </td>
+                <td>@Model.Name</td>
+                <td>@Model.Course</td>
+                <td>@Model.DateEnrolled</td>
+            </tr>
+        </thead>
+    </table>
+
+    <br />
+    <button type="submit" asp-for="Id" class="btn btn-danger">Delete</button>
+    <button type="button" onclick="history.back()" class="btn btn-info">Cancel</button>
+
+</form>

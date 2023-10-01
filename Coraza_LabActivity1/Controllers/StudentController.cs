@@ -1,46 +1,26 @@
 ﻿using Coraza_LabActivity1.Models;
+using Coraza_LabActivity1.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Coraza_LabActivity1.Controllers
 {
     public class StudentController : Controller
     {
-        List<Student> StudentList = new List<Student>
+        private readonly IMyFakeDataService _fakeData;
+
+        public StudentController(IMyFakeDataService fakeData)
         {
-            new Student()
-            {
-                Id = 1,
-                Name = "Edvin Ryding",
-                Course = Course.BSIT,
-                DateEnrolled = DateTime.Parse ("04/09/2023 20:04:30")
-            },
-            new Student()
-            {
-                Id = 2,
-                Name = "Kit Connor",
-                Course = Course.BSCS,
-                DateEnrolled = DateTime.Parse ("22/04/2022 04:08:04")
-            },
-            new Student()
-            {
-                Id = 3,
-               Name = "Kim Kibum",
-                Course = Course.BSIS,
-                DateEnrolled = DateTime.Parse ("23/09/2020 20:08:30")
-            }
+            _fakeData = fakeData;
+        }
 
-
-        };
-
-        public object StudentsList { get; private set; }
 
         public IActionResult Index()
         {
-            return View(StudentList);
+            return View(_fakeData.StudentList);
         }
         public IActionResult ShowDetail(int id)
         {
-            Student? student = StudentList.FirstOrDefault(st => st.Id == id);
+            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == id);
             if (student != null)
             {
                 return View(student);
@@ -56,15 +36,15 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult AddStudent(Student newStudent) 
         {
-            StudentList.Add(newStudent);
+            _fakeData.StudentList.Add(newStudent);
 
-            return View("Index", StudentList);
+            return RedirectToAction("IndexStudent");
         
         }
 
         public IActionResult Edit(int id)
         {
-            Student? student = StudentList.FirstOrDefault(st => st.Id == id);
+            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == id);
 
                 return student != null ? View(student) : NotFound();
         }
@@ -72,7 +52,7 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Edit(Student studentChange)
         {
-            Student? student = StudentList.FirstOrDefault(st => st.Id == studentChange.Id);
+            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == studentChange.Id);
                 if (student != null)
             {
                 student.Id = studentChange.Id;
@@ -80,7 +60,33 @@ namespace Coraza_LabActivity1.Controllers
                 student.Course = studentChange.Course;
                 student.DateEnrolled = studentChange.DateEnrolled;
             }
-                return View("Index", StudentList);
+                return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public IActionResult Delete(Student studentDelete)
+        {
+            Student? student = _fakeData.StudentList.FirstOrDefault(it => it.Id == studentDelete.Id);
+            if (student != null)
+            {
+                return View(student);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            Student? student = _fakeData.StudentList.FirstOrDefault(it => it.Id == id);
+            if (student != null)
+            {
+                _fakeData.StudentList.Remove(student);
+                return RedirectToAction("Index");
+            }
+
+            return NotFound();
+
+
         }
 
     }

@@ -1,4 +1,7 @@
-﻿namespace Coraza_LabActivity1.Models
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
+
+namespace Coraza_LabActivity1.Models
 {
 
     public enum Course
