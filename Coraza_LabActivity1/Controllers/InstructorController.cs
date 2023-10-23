@@ -2,25 +2,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Coraza_LabActivity1.Services;
+using Coraza_LabActivity1.Data;
 
 namespace Coraza_LabActivity1.Controllers
 {
     public class InstructorController : Controller
     {
-        private readonly IMyFakeDataService _fakeData;
+        private readonly AppDbContext _dbContext;
 
-        public InstructorController(IMyFakeDataService fakeData)
+        public InstructorController(AppDbContext dbContext)
         {
-            _fakeData = fakeData;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
-            return View(_fakeData.InstructorList);
+            return View(_dbContext.Instructors);
         }
         public IActionResult ShowDetail(int id)
         {
-            Instructor? instructor = _fakeData.InstructorList.FirstOrDefault(st => st.Id == id);
+            Instructor? instructor = _dbContext.Instructors.FirstOrDefault(st => st.Id == id);
             if (instructor != null)
             {
                 return View(instructor);
@@ -36,15 +37,15 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult AddInstructor(Instructor newInstructor) 
         {
-            _fakeData.InstructorList.Add(newInstructor);
-
+            _dbContext.Instructors.Add(newInstructor);
+            _dbContext.SaveChanges();
             return RedirectToAction("IndexInstructor");
         
         }
 
         public IActionResult Edit(int id)
         {
-            Instructor? instructor = _fakeData.InstructorList.FirstOrDefault(inst => inst.Id == id);
+            Instructor? instructor = _dbContext.Instructors.FirstOrDefault(inst => inst.Id == id);
 
                 return instructor != null ? View(instructor) : NotFound();
         }
@@ -52,7 +53,7 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Edit(Instructor instructorChange)
         {
-            Instructor? instructor = _fakeData.InstructorList.FirstOrDefault(inst => inst.Id == instructorChange.Id);
+            Instructor? instructor = _dbContext.Instructors.FirstOrDefault(inst => inst.Id == instructorChange.Id);
                 if (instructor != null)
             {
                 instructor.Id = instructorChange.Id;
@@ -61,13 +62,14 @@ namespace Coraza_LabActivity1.Controllers
                 instructor.IsTenured = instructorChange.IsTenured;
                 instructor.Rank = instructorChange.Rank;
                 instructor.HiringDate = instructorChange.HiringDate;
+                _dbContext.SaveChanges();
             }
                 return RedirectToAction("IndexInstructor");
         }
         [HttpGet]
         public IActionResult Delete(Instructor instructorDelete)
         {
-            Instructor? instructor = _fakeData.InstructorList.FirstOrDefault(it => it.Id == instructorDelete.Id);
+            Instructor? instructor = _dbContext.Instructors.FirstOrDefault(it => it.Id == instructorDelete.Id);
             if (instructor != null)
             {
                 return View(instructor);
@@ -79,10 +81,11 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Instructor? instructor = _fakeData.InstructorList.FirstOrDefault(it => it.Id == id);
+            Instructor? instructor = _dbContext.Instructors.FirstOrDefault(it => it.Id == id);
             if (instructor != null)
             {
-                _fakeData.InstructorList.Remove(instructor);
+                _dbContext.Instructors.Remove(instructor);
+                _dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
 

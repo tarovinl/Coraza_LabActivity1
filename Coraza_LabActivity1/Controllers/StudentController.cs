@@ -1,4 +1,5 @@
-﻿using Coraza_LabActivity1.Models;
+﻿using Coraza_LabActivity1.Data;
+using Coraza_LabActivity1.Models;
 using Coraza_LabActivity1.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,21 +7,21 @@ namespace Coraza_LabActivity1.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly IMyFakeDataService _fakeData;
+        private readonly AppDbContext _dbContext;
 
-        public StudentController(IMyFakeDataService fakeData)
+        public StudentController(AppDbContext dbContext)
         {
-            _fakeData = fakeData;
+            _dbContext = dbContext;
         }
 
 
         public IActionResult Index()
         {
-            return View(_fakeData.StudentList);
+            return View(_dbContext.Students);
         }
         public IActionResult ShowDetail(int id)
         {
-            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == id);
+            Student? student = _dbContext.Students.FirstOrDefault(st => st.Id == id);
             if (student != null)
             {
                 return View(student);
@@ -36,15 +37,15 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult AddStudent(Student newStudent) 
         {
-            _fakeData.StudentList.Add(newStudent);
-
+            _dbContext.Students.Add(newStudent);
+            _dbContext.SaveChanges();
             return RedirectToAction("IndexStudent");
         
         }
 
         public IActionResult Edit(int id)
         {
-            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == id);
+            Student? student = _dbContext.Students.FirstOrDefault(st => st.Id == id);
 
                 return student != null ? View(student) : NotFound();
         }
@@ -52,20 +53,21 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Edit(Student studentChange)
         {
-            Student? student = _fakeData.StudentList.FirstOrDefault(st => st.Id == studentChange.Id);
+            Student? student = _dbContext.Students.FirstOrDefault(st => st.Id == studentChange.Id);
                 if (student != null)
             {
                 student.Id = studentChange.Id;
                 student.Name = studentChange.Name;
                 student.Course = studentChange.Course;
                 student.DateEnrolled = studentChange.DateEnrolled;
+                _dbContext.SaveChanges();
             }
                 return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Delete(Student studentDelete)
         {
-            Student? student = _fakeData.StudentList.FirstOrDefault(it => it.Id == studentDelete.Id);
+            Student? student = _dbContext.Students.FirstOrDefault(it => it.Id == studentDelete.Id);
             if (student != null)
             {
                 return View(student);
@@ -77,10 +79,11 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Student? student = _fakeData.StudentList.FirstOrDefault(it => it.Id == id);
+            Student? student = _dbContext.Students.FirstOrDefault(it => it.Id == id);
             if (student != null)
             {
-                _fakeData.StudentList.Remove(student);
+                _dbContext.Students.Remove(student);
+                _dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
 
