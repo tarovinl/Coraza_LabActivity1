@@ -1,6 +1,7 @@
 ﻿using Coraza_LabActivity1.Data;
 using Coraza_LabActivity1.Models;
 using Coraza_LabActivity1.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Coraza_LabActivity1.Controllers
@@ -14,7 +15,7 @@ namespace Coraza_LabActivity1.Controllers
             _dbContext = dbContext;
         }
 
-
+        [Authorize]
         public IActionResult Index()
         {
             return View(_dbContext.Students);
@@ -37,6 +38,11 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult AddStudent(Student newStudent) 
         {
+            if (!ModelState.IsValid) //if the data is invalid
+            {
+                return View();//go back to the VIew
+            }
+
             _dbContext.Students.Add(newStudent);
             _dbContext.SaveChanges();
             return RedirectToAction("IndexStudent");
@@ -53,6 +59,10 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Edit(Student studentChange)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             Student? student = _dbContext.Students.FirstOrDefault(st => st.Id == studentChange.Id);
                 if (student != null)
             {

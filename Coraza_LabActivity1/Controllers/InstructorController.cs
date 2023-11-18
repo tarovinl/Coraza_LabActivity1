@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Coraza_LabActivity1.Services;
 using Coraza_LabActivity1.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Coraza_LabActivity1.Controllers
 {
@@ -14,7 +15,7 @@ namespace Coraza_LabActivity1.Controllers
         {
             _dbContext = dbContext;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             return View(_dbContext.Instructors);
@@ -37,6 +38,10 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult AddInstructor(Instructor newInstructor) 
         {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
             _dbContext.Instructors.Add(newInstructor);
             _dbContext.SaveChanges();
             return RedirectToAction("IndexInstructor");
@@ -53,6 +58,10 @@ namespace Coraza_LabActivity1.Controllers
         [HttpPost]
         public IActionResult Edit(Instructor instructorChange)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             Instructor? instructor = _dbContext.Instructors.FirstOrDefault(inst => inst.Id == instructorChange.Id);
                 if (instructor != null)
             {
